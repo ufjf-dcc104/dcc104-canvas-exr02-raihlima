@@ -1,524 +1,536 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Jogo 01</title>
-    <script src="BarraStatus.js"></script>
-    <script src="Foguete.js"></script>
-    <script src="Inimigo.js"></script>
-    <script src="Tiro.js"></script>
-    <script src="Item.js"></script>
-    <script src="Estrelas.js"></script>
-  </head>
-  <body>
-    <h1>Jogo 02</h1>
-    <canvas id="canvas" width="700" height="500"></canvas>
-    <script>
-    //Audio
-    var somFim = new Audio();
-    somFim.src = "Som/Fim.m4a";
-    somFim.load();
+<head>
+  <meta charset="utf-8">
+  <title>Jogo 01</title>
+  <script src="BarraStatus.js"></script>
+  <script src="Foguete.js"></script>
+  <script src="Inimigo.js"></script>
+  <script src="Tiro.js"></script>
+  <script src="Item.js"></script>
+  <script src="Estrelas.js"></script>
+</head>
+<body>
+  <h1>Jogo 02</h1>
+  <canvas id="canvas" width="700" height="500"></canvas>
+  <script>
+  //Audio
+  var somFim = new Audio();
+  somFim.src = "Som/Fim.m4a";
+  somFim.load();
 
-    var somIni = new Audio();
-    somIni.src = "Som/Tobu - Hope [NCS Release].mp3";
-    somIni.load();
+  var somIni = new Audio();
+  somIni.src = "Som/Tobu - Hope [NCS Release].mp3";
+  somIni.load();
 
-    var somSel = new Audio();
-    somSel.src = "Som/Cancel2.m4a";
-    somSel.load();
+  var somSel = new Audio();
+  somSel.src = "Som/Cancel2.m4a";
+  somSel.load();
 
-    var somTiroA = new Audio();
-    somTiroA.src = "Som/Laser1.m4a";
-    somTiroA.load();
+  var somTiroA = new Audio();
+  somTiroA.src = "Som/Laser1.m4a";
+  somTiroA.load();
 
-    var somTiroI = new Audio();
-    somTiroI.src = "Som/Decision2.m4a";
-    somTiroI.load();
+  var somTiroI = new Audio();
+  somTiroI.src = "Som/Decision2.m4a";
+  somTiroI.load();
 
-    var somItem = new Audio();
-    somItem.src = "Som/Item.m4a";
-    somItem.load();
+  var somItem = new Audio();
+  somItem.src = "Som/Item.m4a";
+  somItem.load();
 
-    var somExplosao = new Audio();
-    somExplosao.src = "Som/Explosao.m4a";
-    somExplosao.load();
+  var somExplosao = new Audio();
+  somExplosao.src = "Som/Explosao.m4a";
+  somExplosao.load();
 
-    var somQuebrado = new Audio();
-    somQuebrado.src = "Som/Crash.m4a";
+  var somQuebrado = new Audio();
+  somQuebrado.src = "Som/Crash.m4a";
 
-    var somDano = new Audio();
-    somDano.src = "Som/Dano.m4a";
+  var somDano = new Audio();
+  somDano.src = "Som/Dano.m4a";
 
-      var canvas = document.getElementsByTagName("canvas")[0];
-      var ctx = canvas.getContext("2d");
-      var dt = anterior = 0;
-      var estrela = [];
-      //Imagens
-      //var fogueteIMG = new Image();
-    //  fogueteIMG.src = "ships.png";
+  var canvas = document.getElementsByTagName("canvas")[0];
+  var ctx = canvas.getContext("2d");
+  var dt = anterior = 0;
+  var estrela = [];
 
-    //  var fogueteSelecionado = 0;
-      var foguete  = 0;
-      var barra = new BarraStatus();
-      var inimigo = [];
-      //var contInimigoMortos = 0;
-      var cadenciaInimigo = 10;
+  var foguete  = 0;
+  var barra = new BarraStatus();
+  var inimigo = [];
+  //var contInimigoMortos = 0;
+  var cadenciaInimigo = 10;
 
-      var item = [];
+  var item = [];
 
-      var imunidade = 10;
+  var imunidade = 10;
 
-      //Tiros
-      var tiroNave = [];
-      var tiroInimigo = [];
-      var cadencia = 1;
+  //Tiros
+  var tiroNave = [];
+  var tiroInimigo = [];
+  var cadencia = 1;
 
-      //Tela
-      var cenario =0;
+  //Tela
+  var cenario =0;
 
-      //Ponto obtido durante o Jogo
-      var pontoMax = 0;
-      var pontoAtual = 0;
+  //Ponto obtido durante o Jogo
+  var pontoMax = 0;
+  var pontoAtual = 0;
 
-      var controleTempo = 0;
+  var controleTempo = 0;
 
-      //Trocar de fase
-      function trocaFase(){
-        this.fase += 1;
+  //Trocar de fase
+  function trocaFase(){
+    this.fase += 1;
 
-        //Tela de fase
-        //this.pontoAtual += Math.trunc(foguete.combustivel);
-        inimigo.x = Math.floor(Math.random() * 600);
-        foguete.resetar();
+    //Tela de fase
+    //this.pontoAtual += Math.trunc(foguete.combustivel);
+    inimigo.x = Math.floor(Math.random() * 600);
+    foguete.resetar();
+  }
+
+  function atualizar(t){
+    requestAnimationFrame(atualizar);
+    
+    if(cenario == 0){
+      somIni.play();
+      var imagem = new Image();
+      imagem.src = "Imagem/bg.png";
+      ctx.fillStyle = "black";
+      ctx.fillRect(0,0, canvas.width, canvas.height);
+      ctx.drawImage(imagem,0,0);
+
+      ctx.font = '70pt Arial';
+      ctx.fillStyle = "wheat";
+      ctx.textAlign = "center";
+      ctx.fillText("Space Shooter", 350, 150);
+      ctx.font = '20pt Arial';
+      ctx.fillText("Pressione qualquer tecla para continuar", 350, 470);
+
+
+
+
+    } else if (cenario == 1){
+      ctx.fillStyle = "black";
+      ctx.fillRect(0,0, canvas.width, canvas.height);
+
+
+      if(estrela.length==0){
+        criarEstrelas();
       }
 
-      function atualizar(t){
-        if(cenario == 0){
-          somIni.play();
-          var imagem = new Image();
-          imagem.src = "bg.png";
-          ctx.fillStyle = "black";
-          ctx.fillRect(0,0, canvas.width, canvas.height);
-          ctx.drawImage(imagem,0,0);
+      //Desenhar estrelas
+      for(var i=0;i<estrela.length;i++){
+        estrela[i].desenhar(ctx);
+        estrela[i].mover(0.05);
+        estrela[i].resetar();
+      }
 
-          ctx.font = '70pt Arial';
-          ctx.fillStyle = "wheat";
-          ctx.textAlign = "center";
-          ctx.fillText("Space Shooter", 350, 150);
-          ctx.font = '20pt Arial';
-          ctx.fillText("Pressione qualquer tecla para continuar", 350, 470);
+      ctx.textAlign = "center";
+      ctx.font = '50pt Arial';
+      ctx.fillStyle = "wheat";
+      ctx.fillText("Selecione a nave", 350, 150);
+      ctx.font = '30pt Arial';
 
-          requestAnimationFrame(atualizar);
-
-
-        } else if (cenario == 1){
-          ctx.fillStyle = "black";
-          ctx.fillRect(0,0, canvas.width, canvas.height);
+      ctx.textAlign = "start";
+      var imagem = new Image();
+      imagem.src = "Imagem/foguetes.png";
+      ctx.strokeStyle = "white";
 
 
-          if(estrela.length==0){
-            criarEstrelas();
+      //Naves
+      if(foguete == 0){
+
+        ctx.strokeRect(90,290, 70, 70);
+      }  else if(foguete==1){
+        ctx.strokeRect(290,290, 70, 70);
+      }  else if(foguete==2){
+        ctx.strokeRect(490,290, 70, 70);
+      }
+
+      ctx.fillStyle = "green";
+      ctx.fillText("Verde", 70, 450);
+      //ctx.fillRect(100,300, 30, 30);
+      ctx.drawImage(imagem,0,0,150,150,100,300,50,50);
+      ctx.fillStyle = "wheat";
+      ctx.fillText("Areia", 276, 450);
+      //ctx.fillRect(300,300, 30, 30);
+      ctx.drawImage(imagem,150,0,150,150,300,300,50,50);
+      ctx.fillStyle = "blue";
+      ctx.fillText("Azul", 485, 450);
+      //ctx.fillRect(500,300, 30, 30);
+      ctx.drawImage(imagem,300,0,150,150,500,300,50,50);
+
+
+
+    } else if (cenario == 2){
+      somIni.play();
+
+      dt = (t - anterior)/1000;
+
+      //Desenhar o fundo
+      ctx.fillStyle = "black";
+      ctx.fillRect(0,0, canvas.width, canvas.height);
+
+      //ctx.drawImage(imagem, imagem.x, imagem.y, imagem.largura, imagem.altura, personagem.x, personagem.y, personagem.largura, personagem.altura)
+      //ctx.drawImage(fogueteIMG,50,50, 200, 200, foguete.x,foguete.y,foguete.width,foguete.height);
+
+      //Criar estrelas
+      if(estrela.length==0){
+        criarEstrelas();
+      }
+      //Desenhar estrelas
+      for(var i=0;i<estrela.length;i++){
+        estrela[i].desenhar(ctx);
+        estrela[i].mover(dt);
+        estrela[i].resetar();
+      }
+      //Tiro da Nave
+      for(var i=0;i<tiroNave.length;i++){
+        tiroNave[i].desenhar(ctx);
+        tiroNave[i].atualizar(dt);
+
+        //Verifica se saiu da Tela
+        if(tiroNave[i].verificaSaidaTela()==true || tiroNave[i].color=="darkblue"){
+          tiroNave.splice(i,1);
+          break;
+        }
+      }
+      cadencia+=0.1;
+      cadenciaInimigo+=0.04 ;
+
+      //Criar tiros da Nave
+      if(foguete.tiro===true){
+        if(cadencia>1){
+          somTiroA.load();
+          somTiroA.play();
+          if(foguete.quantidadeTiro==1){
+            tiroNave.push(new Tiro(0,foguete,0));
+            cadencia=0;
+          } else if(foguete.quantidadeTiro==2){
+            tiroNave.push(new Tiro(0,foguete,1));
+            tiroNave.push(new Tiro(0,foguete,2));
+            cadencia=0;
+
+          } else {
+            tiroNave.push(new Tiro(0,foguete,0));
+            tiroNave.push(new Tiro(0,foguete,1));
+            tiroNave.push(new Tiro(0,foguete,2));
+            cadencia=0;
           }
+        }
+      }
 
-          //Desenhar estrelas
-          for(var i=0;i<estrela.length;i++){
-            estrela[i].desenhar(ctx);
-            estrela[i].mover(0.05);
-            estrela[i].resetar();
+      //Funções para inimigos
+      for(var i = 0;i<inimigo.length;i++){
+        inimigo[i].desenhar(ctx);
+        inimigo[i].mover(dt);
+
+        //verifica se inimigo saiu da tela ou acabou a energia
+        if(inimigo[i].verificaSaida()==true){
+          inimigo.splice(i,1);
+          break;
+        } else if(inimigo[i].verificaMorte()==true){
+          var random = Math.random()*100;
+          somExplosao.load();
+          somExplosao.play();
+          if(random<18){
+            item.push(new Item(inimigo[i].x,inimigo[i].y));
           }
+          pontoAtual+=8;
+          inimigo.splice(i,1);
+          break;
 
-          ctx.textAlign = "center";
-          ctx.font = '50pt Arial';
-          ctx.fillStyle = "wheat";
-          ctx.fillText("Selecione a nave", 350, 150);
-          ctx.font = '30pt Arial';
-
-          ctx.textAlign = "start";
-          var imagem = new Image();
-          imagem.src = "foguetes.png";
-          ctx.strokeStyle = "white";
-
-
-          //Naves
-          if(foguete == 0){
-
-            ctx.strokeRect(90,290, 70, 70);
-          }  else if(foguete==1){
-            ctx.strokeRect(290,290, 70, 70);
-          }  else if(foguete==2){
-            ctx.strokeRect(490,290, 70, 70);
-          }
-
-          ctx.fillStyle = "green";
-          ctx.fillText("Verde", 70, 450);
-          //ctx.fillRect(100,300, 30, 30);
-          ctx.drawImage(imagem,0,0,150,150,100,300,50,50);
-          ctx.fillStyle = "wheat";
-          ctx.fillText("Areia", 276, 450);
-          //ctx.fillRect(300,300, 30, 30);
-          ctx.drawImage(imagem,150,0,150,150,300,300,50,50);
-          ctx.fillStyle = "blue";
-          ctx.fillText("Azul", 485, 450);
-          //ctx.fillRect(500,300, 30, 30);
-          ctx.drawImage(imagem,300,0,150,150,500,300,50,50);
-
-          requestAnimationFrame(atualizar);
-
-        } else if (cenario == 2){
-          somIni.play();
-
-          dt = (t - anterior)/1000;
-
-          //Desenhar o fundo
-          ctx.fillStyle = "black";
-          ctx.fillRect(0,0, canvas.width, canvas.height);
-
-          //ctx.drawImage(imagem, imagem.x, imagem.y, imagem.largura, imagem.altura, personagem.x, personagem.y, personagem.largura, personagem.altura)
-          //ctx.drawImage(fogueteIMG,50,50, 200, 200, foguete.x,foguete.y,foguete.width,foguete.height);
-
-          //Criar estrelas
-          if(estrela.length==0){
-            criarEstrelas();
-          }
-          //Desenhar estrelas
-          for(var i=0;i<estrela.length;i++){
-            estrela[i].desenhar(ctx);
-            estrela[i].mover(dt);
-            estrela[i].resetar();
-          }
-          //Tiro da Nave
-          for(var i=0;i<tiroNave.length;i++){
-            tiroNave[i].desenhar(ctx);
-            tiroNave[i].atualizar(dt);
-
-            //Verifica se saiu da Tela
-            if(tiroNave[i].verificaSaidaTela()==true || tiroNave[i].color=="darkblue"){
-              tiroNave.splice(i,1);
-              break;
-            }
-          }
-          cadencia+=0.1;
-          cadenciaInimigo+=0.04 ;
-
-          //Funções para inimigos
-          for(var i = 0;i<inimigo.length;i++){
-            inimigo[i].desenhar(ctx);
-            inimigo[i].mover(dt);
-
-            //verifica se inimigo saiu da tela ou acabou a energia
-            if(inimigo[i].verificaSaida()==true){
-              inimigo.splice(i,1);
-              break;
-            } else if(inimigo[i].verificaMorte()==true){
-              var random = Math.random()*100;
-              somExplosao.load();
-              somExplosao.play();
-              if(random<18){
-                item.push(new Item(inimigo[i].x,inimigo[i].y));
-              }
-              pontoAtual+=8;
-              inimigo.splice(i,1);
-              break;
-
-            }
-
-            //verifica cadencia de tiro inimigo e atira
-            if(inimigo[i].cadencia>=2){
-              tiroInimigo.push(new Tiro(1,inimigo[i],0))
-              inimigo[i].cadencia=0;
-              somTiroI.load();
-              somTiroI.play();
-            }
-          }
-
-          //Atira os misseis inimigos
-          for(var j=0; j<tiroInimigo.length;j++){
-            //Desenha os misseis
-            tiroInimigo[j].desenhar(ctx);
-            tiroInimigo[j].atualizar(dt);
-
-            //verifica se tiro saiu da Tela
-            if(tiroInimigo[j].verificaSaidaTela()==true || tiroInimigo[j].color=="darkblue"){
-              tiroInimigo.splice(j,1);
-              break;
-            }
-          }
-          //Teste Colisao Tiros
-          for(var i = 0; i<tiroNave.length; i++){
-            for(var j=0; j<inimigo.length; j++){
-
-              if(tiroNave[i].verificaColisao(inimigo[j])){
-                inimigo[j].energia-=1;
-                this.pontoAtual+=1;
-
-                //tiroNave.splice(i,1);
-                //tiroNave[i].ativo=false;
-              };
-            }
-          }
-
-          //Teste colisao tiro Inimigo
-          for(var i = 0; i<tiroInimigo.length;i++){
-            if(imunidade>=10){
-              if(tiroInimigo[i].verificaColisao(foguete)==true){
-                somDano.load();
-                somDano.play();
-                foguete.energia-=25;
-                imunidade=0;
-                }
-            }
-          }
-
-          //Teste colisao
-          foguete.atualizar(dt);
-          for(var i =0; i<inimigo.length;i++){
-            if(imunidade>=10){
-              if(foguete.colisao(inimigo[i])){
-                somDano.load();
-                somDano.play();
-                imunidade=0;
-                foguete.energia-=25;
-              }
-
-            }
-          }
-
-        //Funções para itens
-        for(var i=0;i<item.length;i++){
-          item[i].desenhar(ctx);
-          item[i].mover(dt);
         }
 
-        //Pegar Item
-        for(var i=0;i<item.length;i++){
-          if(item[i].verificaColisao(foguete)==true){
-            somItem.load();
-            somItem.play();
-            if(item[i].id==0){
-              imunidade = -60;
-              item.splice(i,1);
-              break;
-            } else if(item[i].id==1){
-              pontoAtual += 50;
-              item.splice(i,1);
-              break;
-            } else if (item[i].id==2){
-              foguete.quantidadeTiro+=1;
-              item.splice(i,1);
-              break;
-            } else if( item[i].id==3){
-              somExplosao.load();
-              somExplosao.play();
-              for(var j =0;j<inimigo.length;j++){
-                inimigo[j].energia=-1;
-              }
-              item.splice(i,1);
-              break;
+        //verifica cadencia de tiro inimigo e atira
+        if(inimigo[i].cadencia>=2){
+          tiroInimigo.push(new Tiro(1,inimigo[i],0))
+          inimigo[i].cadencia=0;
+          somTiroI.load();
+          somTiroI.play();
+        }
+      }
 
-            } else if( item[i].id==4){
-              foguete.vida+=1;
-              item.splice(i,1);
-              break;
+      //Atira os misseis inimigos
+      for(var j=0; j<tiroInimigo.length;j++){
+        //Desenha os misseis
+        tiroInimigo[j].desenhar(ctx);
+        tiroInimigo[j].atualizar(dt);
+
+        //verifica se tiro saiu da Tela
+        if(tiroInimigo[j].verificaSaidaTela()==true || tiroInimigo[j].color=="darkblue"){
+          tiroInimigo.splice(j,1);
+          break;
+        }
+      }
+      //Teste Colisao Tiros
+      for(var i = 0; i<tiroNave.length; i++){
+        for(var j=0; j<inimigo.length; j++){
+
+          if(tiroNave[i].verificaColisao(inimigo[j])){
+            inimigo[j].energia-=1;
+            this.pontoAtual+=1;
+
+            //tiroNave.splice(i,1);
+            //tiroNave[i].ativo=false;
+          };
+        }
+      }
+
+      //Teste colisao tiro Inimigo
+      for(var i = 0; i<tiroInimigo.length;i++){
+        if(imunidade>=10){
+          if(tiroInimigo[i].verificaColisao(foguete)==true){
+            somDano.load();
+            somDano.play();
+            foguete.energia-=25;
+            imunidade=0;
+          }
+        }
+      }
+
+      //Teste colisao
+      foguete.atualizar(dt);
+      for(var i =0; i<inimigo.length;i++){
+        if(imunidade>=10){
+          if(foguete.colisao(inimigo[i])){
+            somDano.load();
+            somDano.play();
+            imunidade=0;
+            foguete.energia-=25;
+          }
+
+        }
+      }
+
+      //Funções para itens
+      for(var i=0;i<item.length;i++){
+        item[i].desenhar(ctx);
+        item[i].mover(dt);
+      }
+
+      //Pegar Item
+      for(var i=0;i<item.length;i++){
+        if(item[i].verificaColisao(foguete)==true){
+          somItem.load();
+          somItem.play();
+          if(item[i].id==0){
+            imunidade = -60;
+            item.splice(i,1);
+            break;
+          } else if(item[i].id==1){
+            pontoAtual += 50;
+            item.splice(i,1);
+            break;
+          } else if (item[i].id==2){
+            foguete.quantidadeTiro+=1;
+            item.splice(i,1);
+            break;
+          } else if( item[i].id==3){
+            somExplosao.load();
+            somExplosao.play();
+            ctx.fillStyle=="white";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            for(var j =0;j<inimigo.length;j++){
+              inimigo[j].energia=-1;
+            }
+            item.splice(i,1);
+            break;
+
+          } else if( item[i].id==4){
+            foguete.vida+=1;
+            item.splice(i,1);
+            break;
           } //Teste para saida da tela
-            if(item[i].verificaSaidaTela()==true){
-              item.splice(i,1);
-              break;
-            }
+          if(item[i].verificaSaidaTela()==true){
+            item.splice(i,1);
+            break;
+          }
         }
       }
 
-        //  foguete.mover(dt);
+      //  foguete.mover(dt);
 
-        //Imunidade temporaria
+      //Imunidade temporaria
 
-        if(this.imunidade<=10){
-          this.imunidade+=0.1;
-        }
-        if(Math.abs(Math.trunc(this.imunidade)%2) ==1){
-          foguete.color="yellow";
-        } else {
-          foguete.color = foguete.corOriginal;
-        }
-
-        //Controle de Vidas
-        if(foguete.energia==0){
-          somQuebrado.load();
-          somQuebrado.play();
-          foguete.vida-=1;
-          foguete.energia=100;
-          imunidade=0;
-        }
-
-        //Para tela de game over
-        if(foguete.vida<1){
-          cenario=3;
-          somFim.play();
-        }
-
-          //Desenhar o Foguete, Barra e a Inimigo
-          foguete.desenhar(ctx);
-          barra.desenhar(ctx, foguete.getVida(), this.pontoAtual, foguete.energia);
-          criarInimigos();
-
-
-          anterior = t;
-          requestAnimationFrame(atualizar);
-        } else if (cenario ==3){
-          //Tela de Game Over
-          somIni.pause();
-          ctx.fillStyle = "black";
-          ctx.fillRect(0,0, canvas.width, canvas.height);
-
-          //Texto Game Over
-          ctx.textAlign = "center";
-          ctx.fillStyle = "wheat";
-          ctx.font = '70pt Arial';
-          ctx.fillText("GAME OVER", 350, 150);
-          ctx.fillText("Pontuação", 350, 321);
-          ctx.fillText(pontoAtual, 350, 421);
-
-          anterior = t;
-          requestAnimationFrame(atualizar);
-        }
-
+      if(this.imunidade<=10){
+        this.imunidade+=0.1;
+      }
+      if(Math.abs(Math.trunc(this.imunidade)%2) ==1){
+        foguete.color="yellow";
+      } else {
+        foguete.color = foguete.corOriginal;
       }
 
-      function criarInimigos(){
-        if(cadenciaInimigo>3){
-          inimigo.push(new Inimigo(pontoAtual/200));
-          cadenciaInimigo=0;
-        }
-
+      //Controle de Vidas
+      if(foguete.energia==0){
+        somQuebrado.load();
+        somQuebrado.play();
+        foguete.vida-=1;
+        foguete.energia=100;
+        imunidade=0;
       }
 
-      function criarEstrelas(){
-        for(var i=0; i<40;i++){
-          estrela.push(new Estrela());
-        }
+      //Para tela de game over
+      if(foguete.vida<1){
+        cenario=3;
+        somFim.play();
       }
 
+      //Desenhar o Foguete, Barra e a Inimigo
+      foguete.desenhar(ctx);
+      barra.desenhar(ctx, foguete.getVida(), this.pontoAtual, foguete.energia);
+      criarInimigos();
 
-      addEventListener("keydown", function (e) {
+
+      anterior = t;
+
+    } else if (cenario ==3){
+      //Tela de Game Over
+      somIni.pause();
+      ctx.fillStyle = "black";
+      ctx.fillRect(0,0, canvas.width, canvas.height);
+
+      //Texto Game Over
+      ctx.textAlign = "center";
+      ctx.fillStyle = "wheat";
+      ctx.font = '70pt Arial';
+      ctx.fillText("GAME OVER", 350, 150);
+      ctx.fillText("Pontuação", 350, 321);
+      ctx.fillText(pontoAtual, 350, 421);
+
+      anterior = t;
+
+    }
+
+  }
+
+  function criarInimigos(){
+    if(cadenciaInimigo>3){
+      inimigo.push(new Inimigo(pontoAtual/200));
+      cadenciaInimigo=0;
+    }
+
+  }
+
+  function criarEstrelas(){
+    for(var i=0; i<70;i++){
+      estrela.push(new Estrela());
+    }
+  }
+
+
+  addEventListener("keydown", function (e) {
     switch (e.keyCode) {
       case 13://Enter
-        if(cenario==1){
-          cenario = 2;
-          foguete= new Foguete (foguete);
-          foguete.resetar();
-          foguete.vida=3;
-        } else if(cenario==3){
-          cenario =2;
-        }
-        case 32://Espaço
-          if(cenario==2){
-            if(cadencia>1){
-              somTiroA.load();
-              somTiroA.play();
-              if(foguete.quantidadeTiro==1){
-                tiroNave.push(new Tiro(0,foguete,0));
-                cadencia=0;
-              } else if(foguete.quantidadeTiro==2){
-                tiroNave.push(new Tiro(0,foguete,1));
-                tiroNave.push(new Tiro(0,foguete,2));
-                cadencia=0;
-
-              } else {
-                tiroNave.push(new Tiro(0,foguete,0));
-                tiroNave.push(new Tiro(0,foguete,1));
-                tiroNave.push(new Tiro(0,foguete,2));
-                cadencia=0;
-              }
-            }
-            break;
-          }
-        case 37: //Botão Esquerdo
-          if(cenario == 1){
-            if(foguete ==2 || foguete ==1){
-              foguete-=1;
-              somSel.load();
-              somSel.play();
-              break;
-            }
-          }
-          if(cenario==2){
-            foguete.vx = -250;
-            break;
-          }
+      if(cenario==1){
+        cenario = 2;
+        foguete= new Foguete (foguete);
+        foguete.resetar();
+        foguete.vida=3;
+        break;
+      } else if(cenario==3){
+        cenario =2;
+      }
+      case 32://Espaço
+      if(cenario==2){
+        foguete.tiro = true;
+        break;
+      }
+      case 37: //Botão Esquerdo
+      if(cenario == 1){
+        if(foguete ==2 || foguete ==1){
+          foguete-=1;
+          somSel.load();
+          somSel.play();
           break;
-        case 39: //Botão Direito
-        if(cenario == 1){
-          if(foguete == 0 || foguete == 1){
-            foguete += 1;
-            somSel.load();
-            somSel.play();
-          }
         }
-        if(cenario==2){
-            foguete.vx =250;
-            break;
-          }
-          break;
-        case 38: //Botão Cima
-        if(cenario==2){
-            foguete.vy=-250;
-            break;
-          }
-        case 40: //Botão Baixo
-          if(cenario==2){
-              foguete.vy=250;
-              break;
-          }
-        default:
-          if(cenario==0){
-            cenario=1;
-          }  else if(cenario==3){
-              cenario=2;
-              foguete.vida=3;
-              foguete.resetar();
-          }
+      }
+      if(cenario==2){
+        foguete.vx = -250;
+        break;
+      }
+      break;
+      case 39: //Botão Direito
+      if(cenario == 1){
+        if(foguete == 0 || foguete == 1){
+          foguete += 1;
+          somSel.load();
+          somSel.play();
+        }
+      }
+      if(cenario==2){
+        foguete.vx =250;
+        break;
+      }
+      break;
+      case 38: //Botão Cima
+      if(cenario==2){
+        foguete.vy=-250;
+        break;
+      }
+      case 40: //Botão Baixo
+      if(cenario==2){
+        foguete.vy=250;
+        break;
+      }
+      default:
+      if(cenario==0){
+        cenario=1;
+      }  else if(cenario==3){
+        cenario=2;
+        foguete.vida=3;
+        foguete.resetar();
+      }
     }
-});
-addEventListener("keyup", function (e) {
+  });
+  addEventListener("keyup", function (e) {
     switch (e.keyCode) {
-        case 37: //Botão Esquerdo
-
-          if(cenario==2){
-            foguete.vx = 0;
-          } //-100*fase/2;
-            break;
-        case 39: //Botão Direito
-
+      case 32: //Espaço
         if(cenario==2){
-            foguete.vx = 0;
-          } //-100*fase/2;
-            break;
-        case 38: //Botão Cima
+          foguete.tiro = false;
+          break;
+        }
+        break;
+      case 37: //Botão Esquerdo
 
-        if(cenario==2){
-            foguete.vy = 0;
-          }
-            break;
-        case 40: //Botão Baixo
-              if(cenario==2){
-                  foguete.vy=0;
-                  break;
-              }
-        default:
-          if(cenario==0){
-          cenario=1;
-          } else if(cenario==3){
-            foguete.vida=3;
-            foguete.resetar();
-            fase=1;
-            pontoAtual=0;
-            pontoMax=0;
-              cenario=2;
-          }
+      if(cenario==2){
+        foguete.vx = 0;
+      } //-100*fase/2;
+      break;
+      case 39: //Botão Direito
+
+      if(cenario==2){
+        foguete.vx = 0;
+      } //-100*fase/2;
+      break;
+      case 38: //Botão Cima
+
+      if(cenario==2){
+        foguete.vy = 0;
+      }
+      break;
+      case 40: //Botão Baixo
+      if(cenario==2){
+        foguete.vy=0;
+        break;
+      }
+      default:
+      if(cenario==0){
+        cenario=1;
+      } else if(cenario==3){
+        foguete.vida=3;
+        foguete.resetar();
+        fase=1;
+        pontoAtual=0;
+        pontoMax=0;
+        cenario=2;
+      }
     }
-});
+  });
 
 
-      requestAnimationFrame(atualizar);
-    </script>
-  </body>
+  requestAnimationFrame(atualizar);
+  </script>
+</body>
 </html>

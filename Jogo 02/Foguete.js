@@ -11,7 +11,9 @@ function Foguete(cor){
   this.vida=3;
   this.quantidadeTiro = 1;
   this.nave = new Image();
-  this.nave.src = "foguetes.png";
+  this.nave.src = "Imagem/foguetes.png";
+
+  this.tiro = false;
 
   //Seleção de color
   if(cor==0){
@@ -48,13 +50,15 @@ Foguete.prototype.resetar = function () {
   this.width = 50;
   this.height = 50;
   this.energia = 100;
+  this.quantidadeTiro = 1;
+  this.tiro = false;
 };
 
 Foguete.prototype.desenhar = function (ctx) {
   //ctx.fillStyle = this.color;
-  //ctx.fillRect(this.x,this.y,this.width,this.height);
+  //  ctx.fillRect(this.x,this.y,this.width,this.height);
   if(this.color == "green"){
-    ctx.drawImage(this.nave,0,0,150,150,this.x,this.y,this.width,this.height);
+    ctx.drawImage(this.nave,0,0,150,150,this.x-4,this.y,this.width+8,this.height+4);
   } else if(this.color == "wheat"){
     ctx.drawImage(this.nave,150,0,150,150,this.x,this.y,this.width,this.height);
   } else if(this.color == "Teal"){
@@ -73,7 +77,7 @@ Foguete.prototype.atualizar = function (dt) {
     this.vx=0;
   } else if(this.x>649){
     this.x=649;
-        this.vx=0;
+    this.vx=0;
   } else {
     this.x = this.x + this.vx * dt;
   }
@@ -88,17 +92,24 @@ Foguete.prototype.atualizar = function (dt) {
 };
 
 Foguete.prototype.colisao = function (inimigo){
+  if(this.x+this.width<inimigo.x) return false;
+  if(this.y+this.height<inimigo.y) return false;
+  if(this.x>inimigo.x+inimigo.width) return false;
+  if(this.y>inimigo.y+inimigo.height) return false;
+  return true;
+  /*
   if(this.y>=inimigo.y && this.y<=(inimigo.y+inimigo.height)){
-    if(this.x>=inimigo.x && this.x<=(inimigo.x+inimigo.width)){
-      return true;
-    }
-    return false;
-  }
-  if(this.y+ this.height>=inimigo.y && this.y + this.height <=(inimigo.y+inimigo.height)){
-    if(this.x + this.width>=inimigo.x && this.x + this.width <=(inimigo.x+inimigo.width)){
-      return true;
-    }
-    return false;
-  }
-  return false;
+  if(this.x>=inimigo.x && this.x<=(inimigo.x+inimigo.width)){
+  return true;
+}
+return false;
+}
+if(this.y+ this.height>=inimigo.y && this.y + this.height <=(inimigo.y+inimigo.height)){
+if(this.x + this.width>=inimigo.x && this.x + this.width <=(inimigo.x+inimigo.width)){
+return true;
+}
+return false;
+}
+return false;
+//*/
 }

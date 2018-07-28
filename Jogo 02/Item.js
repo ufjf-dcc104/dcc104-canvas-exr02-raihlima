@@ -6,7 +6,7 @@ function Item (x,y){
   this.height = 30;
   this.rand = Math.trunc(Math.random()*100);
   this.imagem = new Image();
-  this.imagem.src = "itens.png";
+  this.imagem.src = "Imagem/itens.png";
 
 
   //0 Invencibilidade // 1 ponto //2 dano extra //3 explosao // 4 vida extra

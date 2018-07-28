@@ -9,7 +9,7 @@ function Inimigo(ponto){
   this.energia = 2+ponto;
   this.cadencia = 2;
   this.nave = new Image();
-  this.nave.src = "inimigo.png";
+  this.nave.src = "Imagem/inimigo.png";
 
 }
 
@@ -17,7 +17,7 @@ Inimigo.prototype.desenhar = function (ctx) {
   //ctx.fillStyle = this.color;
   //ctx.fillRect(this.x,this.y,this.width,this.height);
   //ctx.strokeStyle = "white";
-    ctx.drawImage(this.nave,0,0,150,150,this.x,this.y,this.width,this.height);
+    ctx.drawImage(this.nave,0,0,150,150,this.x-4,this.y-10,this.width+8,this.height+20);
 
   //tiro
   if(this.cadencia<2){

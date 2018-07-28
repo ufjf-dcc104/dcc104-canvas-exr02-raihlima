@@ -1,6 +1,6 @@
 function Tiro (sentido, atirador, qtd){
   this.imagem = new Image();
-  this.imagem.src = "tiro.png";
+  this.imagem.src = "Imagem/tiro.png";
   this.sentido = sentido;
   if(qtd==0){
     this.x = atirador.x+(atirador.width/2)-2.5;
